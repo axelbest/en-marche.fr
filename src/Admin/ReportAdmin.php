@@ -2,7 +2,7 @@
 
 namespace AppBundle\Admin;
 
-use AppBundle\Entity\Report;
+use AppBundle\Entity\Report\Report;
 use AppBundle\Report\ReportType;
 use AppBundle\Repository\ReportRepository;
 use Doctrine\ORM\QueryBuilder;
@@ -36,6 +36,7 @@ class ReportAdmin extends AbstractAdmin
     public function __construct(string $code, string $class, string $baseControllerName, ReportRepository $reportRepository)
     {
         parent::__construct($code, $class, $baseControllerName);
+
         $this->reportRepository = $reportRepository;
     }
 
@@ -73,7 +74,7 @@ class ReportAdmin extends AbstractAdmin
                 ],
                 'callback' => function (ProxyQuery $qb, string $alias, string $field, array $value) {
                     if (!$value['value']) {
-                        return;
+                        return false;
                     }
 
                     $qb->andWhere(sprintf('%s INSTANCE OF %s', $alias, $value['value']));
@@ -87,10 +88,19 @@ class ReportAdmin extends AbstractAdmin
                 'field_type' => TextType::class,
                 'callback' => function (ProxyQuery $qb, string $alias, string $field, array $value) {
                     if (!$value['value']) {
-                        return;
+                        return false;
                     }
 
-                    $ids = $this->reportRepository->findIdsByName($value['value']);
+                    // This is a kind of hack to know which class is selected if any
+                    if ($typeClass = $this->datagrid->getValues()['subjectType']['value']) {
+                        $ids = $this->reportRepository->findIdsByNameForClass($typeClass, $value['value']);
+                    } else {
+                        $ids = $this->reportRepository->findIdsByNameForAll($value['value']);
+                    }
+
+                    if (!$ids) {
+                        return true;
+                    }
 
                     /* @var ProxyQuery|QueryBuilder $qb */
                     $qb->andWhere($qb->expr()->in("$alias.id", $ids));
@@ -104,7 +114,7 @@ class ReportAdmin extends AbstractAdmin
                 'field_type' => TextType::class,
                 'callback' => function (ProxyQuery $qb, string $alias, string $field, array $value) {
                     if (!$value['value']) {
-                        return;
+                        return false;
                     }
 
                     /* @var ProxyQuery|QueryBuilder $qb */
@@ -123,7 +133,7 @@ class ReportAdmin extends AbstractAdmin
                 'field_type' => TextType::class,
                 'callback' => function (ProxyQuery $qb, string $alias, string $field, array $value) {
                     if (!$value['value']) {
-                        return;
+                        return false;
                     }
 
                     /* @var ProxyQuery|QueryBuilder $qb */
@@ -145,7 +155,7 @@ class ReportAdmin extends AbstractAdmin
                 'field_type' => EmailType::class,
                 'callback' => function (ProxyQuery $qb, string $alias, string $field, array $value) {
                     if (!$value['value']) {
-                        return;
+                        return false;
                     }
 
                     /* @var ProxyQuery|QueryBuilder $qb */
@@ -171,7 +181,7 @@ class ReportAdmin extends AbstractAdmin
                 ],
                 'callback' => function (ProxyQuery $qb, string $alias, string $field, array $value) {
                     if (!$value['value']) {
-                        return;
+                        return false;
                     }
 
                     $qb->andWhere($qb->expr()->eq(sprintf('json_contains(%s.reasons, :reason)', $alias), 1));
