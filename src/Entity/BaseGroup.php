@@ -6,6 +6,7 @@ use Algolia\AlgoliaSearchBundle\Mapping\Annotation as Algolia;
 use AppBundle\Geocoder\GeoPointInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use JMS\Serializer\Annotation as JMS;
 use libphonenumber\PhoneNumber;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
@@ -31,6 +32,9 @@ abstract class BaseGroup implements GeoPointInterface
      * @ORM\Column
      *
      * @Algolia\Attribute
+     *
+     * @JMS\Groups({"public"})
+     * @JMS\SerializedName("name")
      */
     protected $name;
 
@@ -51,6 +55,9 @@ abstract class BaseGroup implements GeoPointInterface
      * @Gedmo\Slug(fields={"canonicalName"})
      *
      * @Algolia\Attribute
+     *
+     * @JMS\Groups({"public"})
+     * @JMS\SerializedName("slug")
      */
     protected $slug;
 
@@ -93,6 +100,9 @@ abstract class BaseGroup implements GeoPointInterface
      * @ORM\Column(type="smallint", options={"unsigned": true})
      *
      * @Algolia\Attribute
+     *
+     * @JMS\Groups({"public"})
+     * @JMS\SerializedName("membersCount")
      */
     protected $membersCounts;
 
@@ -246,5 +256,15 @@ abstract class BaseGroup implements GeoPointInterface
     public function equals(self $other): bool
     {
         return $this->uuid->equals($other->getUuid());
+    }
+
+    /**
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("uuid"),
+     * @JMS\Groups({"public"})
+     */
+    public function getUuidAsString(): string
+    {
+        return $this->getUuid()->toString();
     }
 }
