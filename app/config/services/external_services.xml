@@ -53,6 +53,7 @@
             <argument type="service" id="csa_guzzle.client.mailjet_api"/>
             <argument>%env(MAILJET_CAMPAIGN_PUBLIC_KEY)%</argument>
             <argument>%env(MAILJET_CAMPAIGN_PRIVATE_KEY)%</argument>
+            <argument type="service" id="monolog.logger" />
         </service>
 
         <service id="app.mailer.transport.rabbitmq_campaign" class="AppBundle\Mailer\Transport\RabbitMQTransport" public="false">
