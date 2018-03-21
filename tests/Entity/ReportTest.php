@@ -8,7 +8,6 @@ use AppBundle\Entity\CitizenProject;
 use AppBundle\Entity\Committee;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Report\Report;
-use AppBundle\Report\ReportType;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;
 
@@ -110,12 +109,7 @@ class ReportTest extends TestCase
 
     private function createReport(string $subjectClass, array $reasons, string $comment = null): Report
     {
-        return new class(
-            $this->createMock($subjectClass),
-            $this->createMock(Adherent::class),
-            $reasons,
-            $comment
-        ) extends Report {
+        return new class($this->createMock($subjectClass), $this->createMock(Adherent::class), $reasons, $comment) extends Report {
             // CS needed for Style CI
         };
     }
