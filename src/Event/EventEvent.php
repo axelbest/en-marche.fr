@@ -9,7 +9,7 @@ use AppBundle\Geocoder\GeocodableEntityEventInterface;
 use AppBundle\Geocoder\GeocodableInterface;
 use Symfony\Component\EventDispatcher\Event;
 
-class EventBaseEvent extends Event implements GeocodableEntityEventInterface
+class EventEvent extends Event implements GeocodableEntityEventInterface
 {
     protected $author;
     protected $event;

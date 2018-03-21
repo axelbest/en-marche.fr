@@ -3,7 +3,7 @@
 namespace AppBundle\Admin;
 
 use AppBundle\Entity\Event;
-use AppBundle\Event\EventUpdatedEvent;
+use AppBundle\Event\EventEvent;
 use AppBundle\Events;
 use AppBundle\Form\EventCategoryType;
 use AppBundle\Form\UnitedNationsCountryType;
@@ -118,7 +118,7 @@ class EventAdmin extends AbstractAdmin
 
     public function postUpdate($object)
     {
-        $event = new EventUpdatedEvent($object->getOrganizer(), $object);
+        $event = new EventEvent($object->getOrganizer(), $object);
 
         $this->dispatcher->dispatch(Events::EVENT_UPDATED, $event);
     }

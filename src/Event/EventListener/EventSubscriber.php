@@ -2,7 +2,7 @@
 
 namespace AppBundle\Event\EventListener;
 
-use AppBundle\Event\EventBaseEvent;
+use AppBundle\Event\EventEvent;
 use AppBundle\Events;
 use JMS\Serializer\SerializationContext;
 use JMS\Serializer\SerializerInterface;
@@ -20,24 +20,24 @@ class EventSubscriber implements EventSubscriberInterface
         $this->serializer = $serializer;
     }
 
-    public function publishEventCreated(EventBaseEvent $event): void
+    public function publishEventCreated(EventEvent $event): void
     {
         $this->producer->publish($this->serialize($event), Events::EVENT_CREATED);
     }
 
-    public function publishEventUpdated(EventBaseEvent $event): void
+    public function publishEventUpdated(EventEvent $event): void
     {
         $this->producer->publish($this->serialize($event), Events::EVENT_UPDATED);
     }
 
-    public function publishEventDeleted(EventBaseEvent $event): void
+    public function publishEventDeleted(EventEvent $event): void
     {
         $body = json_encode(['uuid' => $event->getEvent()->getUuid()->toString()]);
 
         $this->producer->publish($body, Events::EVENT_DELETED);
     }
 
-    public function serialize(EventBaseEvent $event): string
+    public function serialize(EventEvent $event): string
     {
         return $this->serializer->serialize(
             $event->getEvent(),
