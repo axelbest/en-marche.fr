@@ -49,14 +49,14 @@ class ReportRepository extends EntityRepository
 
     public function anonymizeAuthorReports(Adherent $adherent)
     {
-        $this->createQueryBuilder('r')
+        return $this->createQueryBuilder('r')
             ->update()
             ->set('r.author', ':new_value')
             ->setParameter('new_value', null)
             ->where('r.author = :author')
             ->setParameter('author', $adherent)
+            ->getQuery()
+            ->execute()
         ;
-
-        return $qb->getQuery()->execute();
     }
 }
