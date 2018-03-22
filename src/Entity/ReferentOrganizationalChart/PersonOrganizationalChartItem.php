@@ -14,12 +14,14 @@ class PersonOrganizationalChartItem extends AbstractOrganizationalChartItem
     /**
      * @var Collection|ReferentPersonLink[]
      *
-     * @ORM\OneToMany(targetEntity="ReferentPersonLink", mappedBy="personItem", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ReferentPersonLink", mappedBy="personOrganizationalChartItem", cascade={"persist"})
      */
     private $referentPersonLinks;
 
-    public function __construct()
+    public function __construct(string $label, AbstractOrganizationalChartItem $parent = null)
     {
+        parent::__construct($label, $parent);
+
         $this->referentPersonLinks = new ArrayCollection();
     }
 
@@ -31,10 +33,20 @@ class PersonOrganizationalChartItem extends AbstractOrganizationalChartItem
         return $this->referentPersonLinks;
     }
 
-    public function setReferentPersonLinks(Collection $referentPersonLinks): self
+    public function setReferentPersonLinks(Collection $referentPersonLinks): void
     {
         $this->referentPersonLinks = $referentPersonLinks;
+    }
 
-        return $this;
+    public function addReferentPersonLink(ReferentPersonLink $referentPersonLink): void
+    {
+        $referentPersonLink->setPersonItem($this);
+        $this->referentPersonLinks->add($referentPersonLink);
+    }
+
+    public function removeReferentPersonLink(ReferentPersonLink $referentPersonLink): void
+    {
+        $referentPersonLink->setPersonItem(null);
+        $this->referentPersonLinks->remove($referentPersonLink);
     }
 }

@@ -15,7 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="referent", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="referent_slug_unique", columns="slug")
  * })
- * @ORM\Entity(repositoryClass="AppBundle\Repository\LegislativeCandidateRepository")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ReferentRepository")
  *
  * @Algolia\Index(autoIndex=false)
  * @UniqueEntity(fields="slug", groups="Admin")

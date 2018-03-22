@@ -48,8 +48,23 @@ class LoadReferentData implements FixtureInterface, ContainerAwareInterface
         $candidate002->setFacebookPageUrl('https://www.facebook.com/fakeaccount');
         $candidate002->setTwitterPageUrl('https://twitter.com/fakeaccount');
 
+        $candidate003 = $this->createReferent(
+            [$areas['92']],
+            'Haut-de-seine',
+            Genders::MALE,
+            'Jean',
+            'Dupont',
+            null,
+            'jean',
+            Referent::ENABLED
+        );
+        $candidate003->setEmailAddress('referent@en-marche-dev.fr');
+        $candidate003->setFacebookPageUrl('https://www.facebook.com/fakeaccount');
+        $candidate003->setTwitterPageUrl('https://twitter.com/fakeaccount');
+
         $manager->persist($candidate001);
         $manager->persist($candidate002);
+        $manager->persist($candidate003);
 
         $manager->flush();
     }

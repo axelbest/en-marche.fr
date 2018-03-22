@@ -5,18 +5,23 @@ namespace AppBundle\Controller\EnMarche;
 use AppBundle\Entity\Committee;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Projection\ReferentManagedUser;
+use AppBundle\Entity\Referent;
 use AppBundle\Entity\ReferentOrganizationalChart\PersonOrganizationalChartItem;
+use AppBundle\Entity\ReferentOrganizationalChart\ReferentPersonLink;
 use AppBundle\Event\EventCommand;
 use AppBundle\Event\EventRegistrationCommand;
 use AppBundle\Form\EventCommandType;
 use AppBundle\Form\ReferentMessageType;
+use AppBundle\Form\ReferentPersonLinkType;
 use AppBundle\Referent\ManagedUsersFilter;
 use AppBundle\Referent\ReferentMessage;
 use AppBundle\Referent\ReferentMessageNotifier;
+use AppBundle\Repository\ReferentOrganizationalChart\AbstractOrganizationalChartItemRepository;
+use AppBundle\Repository\ReferentOrganizationalChart\ReferentPersonLinkRepository;
+use AppBundle\Repository\ReferentRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -150,16 +155,51 @@ class ReferentController extends Controller
     /**
      * @Route("/organigrame", name="app_referent_organizational_chart")
      */
-    public function organizationalChartAction()
+    public function organizationalChartAction(AbstractOrganizationalChartItemRepository $organizationalChartItemRepository, ReferentRepository $referentRepository)
     {
-        return $this->render('referent/organizational_chart.html.twig');
+        /** @var Referent $referent */
+        if (!$referent = $referentRepository->findOneByEmailAndSelectPersonOrgaChart($this->getUser()->getEmailAddress())) {
+            throw $this->createAccessDeniedException('You have to be a root referent to edit this ressource');
+        }
+
+        return $this->render('referent/organizational_chart.html.twig', [
+            'organization_chart_items' => $organizationalChartItemRepository->findAllRootItems(),
+            'referent' => $referent,
+        ]);
     }
 
     /**
      * @Route("/organigrame/{id}", name="app_referent_referent_person_link_edit")
      */
-    public function editReferentPersonLink(PersonOrganizationalChartItem $personOrganizationalChartItem)
+    public function editReferentPersonLink(Request $request, ReferentPersonLinkRepository $referentPersonLinkRepository, ReferentRepository $referentRepository, PersonOrganizationalChartItem $personOrganizationalChartItem)
     {
-        return $this->render('referent/edit_referent_person_link.html.twig');
+        /** @var Referent $referent */
+        if (!$referent = $referentRepository->findOneBy(['emailAddress' => $this->getUser()->getEmailAddress()])) {
+            throw $this->createAccessDeniedException('You have to be a root referent to edit this ressource');
+        }
+
+        $form = $this->createForm(
+            ReferentPersonLinkType::class,
+            $referentPersonLinkRepository->findOrCreateByOrgaItemAndReferent($personOrganizationalChartItem, $referent)
+        );
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var ReferentPersonLink $referentPersonLink */
+            $referentPersonLink = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+
+            $em->persist($referentPersonLink);
+            $em->flush();
+
+            $this->addFlash('success', 'Organigrame mis à jours.');
+
+            return $this->redirectToRoute('app_referent_organizational_chart');
+        }
+
+        return $this->render('referent/edit_referent_person_link.html.twig', [
+            'form_referent_person_link' => $form->createView(),
+        ]);
     }
 }

@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity\Referent;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ReferentOrganizationalChart\ReferentPersonLinkRepository")
  */
 class ReferentPersonLink
 {
@@ -59,7 +59,7 @@ class ReferentPersonLink
      *
      * @ORM\ManyToOne(targetEntity="PersonOrganizationalChartItem", inversedBy="referentPersonLinks", cascade={"persist"})
      */
-    private $personItem;
+    private $personOrganizationalChartItem;
 
     /**
      * @var Referent
@@ -67,6 +67,12 @@ class ReferentPersonLink
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Referent", inversedBy="referentPersonLinks", cascade={"persist"})
      */
     private $referent;
+
+    public function __construct(PersonOrganizationalChartItem $personOrganizationalChartItem, Referent $referent)
+    {
+        $this->personOrganizationalChartItem = $personOrganizationalChartItem;
+        $this->referent = $referent;
+    }
 
     public function getId(): ?int
     {
@@ -123,16 +129,6 @@ class ReferentPersonLink
         $this->postalAddress = $postalAddress;
     }
 
-    public function getPersonItem(): ?PersonOrganizationalChartItem
-    {
-        return $this->personItem;
-    }
-
-    public function setPersonItem(?PersonOrganizationalChartItem $personItem): void
-    {
-        $this->personItem = $personItem;
-    }
-
     public function getReferent(): ?Referent
     {
         return $this->referent;
@@ -141,5 +137,15 @@ class ReferentPersonLink
     public function setReferent(?Referent $referent): void
     {
         $this->referent = $referent;
+    }
+
+    public function getPersonOrganizationalChartItem(): ?PersonOrganizationalChartItem
+    {
+        return $this->personOrganizationalChartItem;
+    }
+
+    public function setPersonOrganizationalChartItem(?PersonOrganizationalChartItem $personOrganizationalChartItem): void
+    {
+        $this->personOrganizationalChartItem = $personOrganizationalChartItem;
     }
 }

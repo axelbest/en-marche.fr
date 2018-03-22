@@ -1,224 +1,45 @@
 {% extends 'referent/_layout.html.twig' %}
 
-{% import _self as orga %}
+{% block orga_chart_row %}
+    <ol{% if items is not empty and items|first.level <= 2 %} class="organizational-chart"{% endif %}>
+        {% for item in items %}
+            <li>
+                {{ block('orga_chart_item') }}
+            </li>
+        {% endfor %}
+    </ol>
+{% endblock %}
 
-{% macro orga_chart_row(items) %}
-<ol>
-    {% for item in items %}
-        <li>
-            {{ orga.orga_chart_item(item) }}
-        </li>
-    {% endfor %}
-</ol>
-{% endmacro %}
-
-{% macro orga_chart_item(item) %}
+{% block orga_chart_item %}
     <div>
-        <h{{ item.level }}>{{ item.label }}</h{{ item.level }}>
+        <h{{ item.level }}>
+            {% if item.referentPersonLinks is defined %}
+                <a href="{{ path('app_referent_referent_person_link_edit', {id: item.id}) }}">
+                    {{ item.label }}
+                    <br />
+                    {% set ref_person_link = get_ref_person_link(item, referent) %}
+                    {% if ref_person_link %}
+                        {{ ref_person_link.firstName }} {{ ref_person_link.lastName }}
+                    {% else %}
+                        - -
+                    {% endif %}
+                </a>
+            {% else %}
+                {{ item.label }}
+            {% endif %}
+        </h{{ item.level }}>
     </div>
-{% endmacro %}
+    {% if item.children|length %}
+        {% with { items: item.children } %}
+            {{ block('orga_chart_row') }}
+        {% endwith %}
+    {% endif %}
+{% endblock %}
 
 {% block referent_content %}
-    <h3 class="text--center">Equipe départementale</h3>
-    <ol class="organizational-chart">
-        <li>
-            <div>
-                <h1>Primary</h1>
-            </div>
-            <div>
-                <h1>Primary</h1>
-            </div>
-            <ol>
-                <li>
-                    <div>
-                        <h2>Secondary</h2>
-                    </div>
-                    <ol>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                            <ol>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                    <ol>
-                                        <li>
-                                            <div>
-                                                <h5>Quinary</h5>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div>
-                                                <h5>Quinary</h5>
-                                            </div>
-                                            <ol>
-                                                <li>
-                                                    <div>
-                                                        <h6>Senary</h6>
-                                                    </div>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                    </ol>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                            </ol>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                    </ol>
-                </li>
-                <li>
-                    <div>
-                        <h2>Secondary</h2>
-                    </div>
-                    <ol>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                            <ol>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                            </ol>
-                        </li>
-                    </ol>
-                </li>
-                <li>
-                    <div>
-                        <h2>Secondary</h2>
-                    </div>
-                    <ol>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                            <ol>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                    <ol>
-                                        <li>
-                                            <div>
-                                                <h5>Quinary</h5>
-                                            </div>
-                                            <ol>
-                                                <li>
-                                                    <div>
-                                                        <h6>Senary</h6>
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div>
-                                                        <h6>Senary</h6>
-                                                    </div>
-                                                </li>
-                                            </ol>
-                                        </li>
-                                        <li>
-                                            <div>
-                                                <h5>Quinary</h5>
-                                            </div>
-                                        </li>
-                                    </ol>
-                                </li>
-                            </ol>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                    </ol>
-                </li>
-                <li>
-                    <div>
-                        <h2>Secondary</h2>
-                    </div>
-                    <ol>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                            <ol>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div>
-                                        <h4>Quaternary</h4>
-                                    </div>
-                                </li>
-                            </ol>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                        <li>
-                            <div>
-                                <h3>Tertiary</h3>
-                            </div>
-                        </li>
-                    </ol>
-                </li>
-            </ol>
-        </li>
-    </ol>
+    <h3>Equipe départementale</h3>
+    <hr>
+    {% with { items: organization_chart_items } %}
+        {{ block('orga_chart_row') }}
+    {% endwith %}
 {% endblock %}

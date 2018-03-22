@@ -2,11 +2,12 @@
 
 namespace AppBundle\Entity\ReferentOrganizationalChart;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ReferentOrganizationalChart\AbstractOrganizationalChartItemRepository")
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="type", type="string", length=20)
  * @ORM\DiscriminatorMap({
@@ -28,7 +29,7 @@ abstract class AbstractOrganizationalChartItem
     /**
      * @var string
      *
-     * @ORM\Column(nullable=true)
+     * @ORM\Column
      */
     private $label;
 
@@ -45,6 +46,13 @@ abstract class AbstractOrganizationalChartItem
      * @ORM\ManyToOne(targetEntity="AbstractOrganizationalChartItem", inversedBy="children", cascade={"persist"})
      */
     private $parent;
+
+    public function __construct(string $label, AbstractOrganizationalChartItem $parent = null)
+    {
+        $this->children = new ArrayCollection();
+        $this->label = $label;
+        $this->parent = $parent;
+    }
 
     public function getId(): ?int
     {
@@ -86,7 +94,7 @@ abstract class AbstractOrganizationalChartItem
         $this->children[] = $child;
     }
 
-    public function getParent(): AbstractOrganizationalChartItem
+    public function getParent(): ?AbstractOrganizationalChartItem
     {
         return $this->parent;
     }
