@@ -65,6 +65,9 @@ abstract class BaseGroup implements GeoPointInterface
      * The group current status.
      *
      * @ORM\Column(length=20)
+     *
+     * @JMS\Groups({"public"})
+     * @JMS\SerializedName("status")
      */
     protected $status;
 

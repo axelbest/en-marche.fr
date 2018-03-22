@@ -135,6 +135,9 @@ abstract class BaseEvent implements GeoPointInterface
      * @var string|null
      *
      * @ORM\Column(length=20)
+     *
+     * @JMS\Groups({"public"})
+     * @JMS\SerializedName("status")
      */
     protected $status;
 
