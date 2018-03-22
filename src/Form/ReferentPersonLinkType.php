@@ -29,7 +29,6 @@ class ReferentPersonLinkType extends AbstractType
             ->add('postalAddress', TextType::class, [
                 'label' => 'Addresse postale'
             ])
-            ->add('submit', SubmitType::class)
         ;
     }
 
