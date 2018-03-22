@@ -5,6 +5,7 @@ namespace AppBundle\Controller\EnMarche;
 use AppBundle\Entity\Committee;
 use AppBundle\Entity\Event;
 use AppBundle\Entity\Projection\ReferentManagedUser;
+use AppBundle\Entity\ReferentOrganizationalChart\PersonOrganizationalChartItem;
 use AppBundle\Event\EventCommand;
 use AppBundle\Event\EventRegistrationCommand;
 use AppBundle\Form\EventCommandType;
@@ -15,6 +16,7 @@ use AppBundle\Referent\ReferentMessageNotifier;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,7 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ReferentController extends Controller
 {
-    const TOKEN_ID = 'referent_managed_users';
+    public const TOKEN_ID = 'referent_managed_users';
 
     /**
      * @Route("/utilisateurs", name="app_referent_users")
@@ -143,5 +145,21 @@ class ReferentController extends Controller
         return $this->render('referent/committees_list.html.twig', [
             'managedCommitteesJson' => $exporter->exportAsJson($list),
         ]);
+    }
+
+    /**
+     * @Route("/organigrame", name="app_referent_organizational_chart")
+     */
+    public function organizationalChartAction()
+    {
+        return $this->render('referent/organizational_chart.html.twig');
+    }
+
+    /**
+     * @Route("/organigrame/{id}", name="app_referent_referent_person_link_edit")
+     */
+    public function editReferentPersonLink(PersonOrganizationalChartItem $personOrganizationalChartItem)
+    {
+        return $this->render('referent/edit_referent_person_link.html.twig');
     }
 }

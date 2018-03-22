@@ -68,99 +68,78 @@ class ReferentPersonLink
      */
     private $referent;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getFirstName(): string
+    public function getFirstName(): ?string
     {
         return $this->firstName;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setFirstName(?string $firstName): void
     {
         $this->firstName = $firstName;
-
-        return $this;
     }
 
-    public function getLastName(): string
+    public function getLastName(): ?string
     {
         return $this->lastName;
     }
 
-    public function setLastName(string $lastName): self
+    public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
-
-        return $this;
     }
 
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): void
     {
         $this->email = $email;
-
-        return $this;
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->phone;
     }
 
-    public function setPhone(string $phone): self
+    public function setPhone(?string $phone): void
     {
         $this->phone = $phone;
-
-        return $this;
     }
 
-    public function getPostalAddress(): string
+    public function getPostalAddress(): ?string
     {
         return $this->postalAddress;
     }
 
-    public function setPostalAddress(string $postalAddress): self
+    public function setPostalAddress(?string $postalAddress): void
     {
         $this->postalAddress = $postalAddress;
-
-        return $this;
     }
 
-    public function getPersonItem(): PersonOrganizationalChartItem
+    public function getPersonItem(): ?PersonOrganizationalChartItem
     {
         return $this->personItem;
     }
 
-    public function setPersonItem(PersonOrganizationalChartItem $personItem): self
+    public function setPersonItem(?PersonOrganizationalChartItem $personItem): void
     {
         $this->personItem = $personItem;
-
-        return $this;
     }
 
-    public function getReferent(): Referent
+    public function getReferent(): ?Referent
     {
         return $this->referent;
     }
 
-    public function setReferent(Referent $referent): self
+    public function setReferent(?Referent $referent): void
     {
         $this->referent = $referent;
-
-        return $this;
     }
 }

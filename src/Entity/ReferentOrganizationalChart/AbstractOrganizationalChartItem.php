@@ -46,28 +46,19 @@ abstract class AbstractOrganizationalChartItem
      */
     private $parent;
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
-    }
-
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return $this->label;
     }
 
-    public function setLabel(string $label): self
+    public function setLabel(string $label): void
     {
         $this->label = $label;
-
-        return $this;
     }
 
     /**
@@ -78,11 +69,21 @@ abstract class AbstractOrganizationalChartItem
         return $this->children;
     }
 
-    public function setChildren(Collection $children): self
+    public function setChildren(Collection $children): void
     {
         $this->children = $children;
+    }
 
-        return $this;
+    public function addChild(AbstractOrganizationalChartItem $child): void
+    {
+        $child->setParent($this);
+        $this->children[] = $child;
+    }
+
+    public function removeChild(AbstractOrganizationalChartItem $child): void
+    {
+        $child->setParent(null);
+        $this->children[] = $child;
     }
 
     public function getParent(): AbstractOrganizationalChartItem
@@ -90,10 +91,17 @@ abstract class AbstractOrganizationalChartItem
         return $this->parent;
     }
 
-    public function setParent(AbstractOrganizationalChartItem $parent): self
+    public function setParent(?AbstractOrganizationalChartItem $parent): void
     {
         $this->parent = $parent;
+    }
 
-        return $this;
+    public function getLevel(): int
+    {
+        if ($this->getParent()) {
+            return $this->getParent()->getLevel() + 1;
+        }
+
+        return 1;
     }
 }
