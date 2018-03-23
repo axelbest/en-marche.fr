@@ -1,45 +1,9 @@
 {% extends 'referent/_layout.html.twig' %}
 
-{% block orga_chart_row %}
-    <ol{% if items is not empty and items|first.level <= 2 %} class="organizational-chart"{% endif %}>
-        {% for item in items %}
-            <li>
-                {{ block('orga_chart_item') }}
-            </li>
-        {% endfor %}
-    </ol>
-{% endblock %}
-
-{% block orga_chart_item %}
-    <div>
-        <h{{ item.level }}>
-            {% if item.referentPersonLinks is defined %}
-                <a href="{{ path('app_referent_referent_person_link_edit', {id: item.id}) }}">
-                    {{ item.label }}
-                    <br />
-                    {% set ref_person_link = get_ref_person_link(item, referent) %}
-                    {% if ref_person_link %}
-                        {{ ref_person_link.firstName }} {{ ref_person_link.lastName }}
-                    {% else %}
-                        - -
-                    {% endif %}
-                </a>
-            {% else %}
-                {{ item.label }}
-            {% endif %}
-        </h{{ item.level }}>
-    </div>
-    {% if item.children|length %}
-        {% with { items: item.children } %}
-            {{ block('orga_chart_row') }}
-        {% endwith %}
-    {% endif %}
-{% endblock %}
+{% import 'referent/organizational_chart_macros.html.twig' as oc %}
 
 {% block referent_content %}
     <h3>Equipe départementale</h3>
     <hr>
-    {% with { items: organization_chart_items } %}
-        {{ block('orga_chart_row') }}
-    {% endwith %}
+    {{ oc.orga_chart_row(organization_chart_items, referent, true) }}
 {% endblock %}

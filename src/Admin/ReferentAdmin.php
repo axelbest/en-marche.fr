@@ -4,6 +4,7 @@ namespace AppBundle\Admin;
 
 use AppBundle\Entity\Referent;
 use AppBundle\Form\GenderType;
+use AppBundle\Repository\ReferentOrganizationalChart\AbstractOrganizationalChartItemRepository;
 use AppBundle\ValueObject\Genders;
 use Sonata\AdminBundle\Admin\AbstractAdmin;
 use Sonata\AdminBundle\Datagrid\DatagridMapper;
@@ -19,9 +20,11 @@ use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
 class ReferentAdmin extends AbstractAdmin
 {
+    public $OCItems = [];
     private $dataTransformer;
+    private $organizationalChartItemRepository;
 
-    public function __construct(string $code, string $class, string $baseControllerName, DataTransformerInterface $dataTransformer)
+    public function __construct(string $code, string $class, string $baseControllerName, DataTransformerInterface $dataTransformer, AbstractOrganizationalChartItemRepository $organizationalChartItemRepository)
     {
         parent::__construct($code, $class, $baseControllerName);
 
@@ -36,6 +39,7 @@ class ReferentAdmin extends AbstractAdmin
         $this->formOptions = [
             'validation_groups' => ['Default', 'Admin'],
         ];
+        $this->organizationalChartItemRepository = $organizationalChartItemRepository;
     }
 
     protected function configureDatagridFilters(DatagridMapper $mapper)
@@ -198,6 +202,8 @@ class ReferentAdmin extends AbstractAdmin
 
     protected function configureShowFields(ShowMapper $mapper)
     {
+        $this->OCItems = $this->organizationalChartItemRepository->findAllRootItems();
+
         $mapper
             ->with('Informations générales', ['class' => 'col-md-5'])
                 ->add('id', null, [
