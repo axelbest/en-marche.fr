@@ -78,11 +78,21 @@ trait EntityPostAddressTrait
         return $this->postAddress->getInseeCode();
     }
 
+    /**
+     * @JMS\Groups({"public"})
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("latitude")
+     */
     public function getLatitude()
     {
         return $this->postAddress->getLatitude();
     }
 
+    /**
+     * @JMS\Groups({"public"})
+     * @JMS\VirtualProperty
+     * @JMS\SerializedName("longitude")
+     */
     public function getLongitude()
     {
         return $this->postAddress->getLongitude();
