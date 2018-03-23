@@ -2,6 +2,16 @@
 
 {# Override #}
 
+{%- block form_row -%}
+    {% with {attr: container_attr} %}
+    <div {{ block('attributes') }}>
+        {% endwith %}
+        {{- form_label(form) -}}
+        {{- form_errors(form) -}}
+        {{- form_widget(form) -}}
+    </div>
+{%- endblock form_row -%}
+
 {% block form_widget_simple -%}
     {% if type is not defined or type not in ['file', 'hidden'] %}
         {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form form__field')|trim}) -%}

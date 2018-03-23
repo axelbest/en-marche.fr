@@ -148,4 +148,9 @@ class ReferentPersonLink
     {
         $this->personOrganizationalChartItem = $personOrganizationalChartItem;
     }
+
+    public function getAdminDisplay(): string
+    {
+        return sprintf('(%s) %s %s', $this->personOrganizationalChartItem->getLabel(), $this->firstName, $this->lastName);
+    }
 }

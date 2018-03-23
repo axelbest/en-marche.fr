@@ -200,6 +200,7 @@ class ReferentController extends Controller
 
         return $this->render('referent/edit_referent_person_link.html.twig', [
             'form_referent_person_link' => $form->createView(),
+            'person_organizational_chart_item' => $personOrganizationalChartItem,
         ]);
     }
 }
